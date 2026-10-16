@@ -1,0 +1,96 @@
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
+
+namespace RepairServiceTracker
+{
+    public static class Ui
+    {
+        public static bool Phone(string phone)
+        {
+            return Regex.IsMatch(
+                phone ?? "", @"^0\d{9}$");
+        }
+
+        public static bool Confirm(string message)
+        {
+            return MessageBox.Show(
+                "Bạn có chắc chắn muốn xóa " + message + "?",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            ) == DialogResult.Yes;
+        }
+        public static void ResetSelection(DataGridView grid)
+        {
+            grid.ClearSelection();
+            grid.CurrentCell = null;
+        }
+
+        private static string Csv(string value)
+        {
+            return "\"" +
+                (value ?? "").Replace("\"", "\"\"") + "\"";
+        }
+        public static void Export(DataGridView grid)
+        {
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Title = "Xuất danh sách sửa chữa";
+                dialog.Filter = "CSV files (*.csv)|*.csv";
+                dialog.FileName = "DanhSachSuaChua.csv";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(
+                        dialog.FileName,
+                        false,
+                        new UTF8Encoding(true)))
+                    {
+                        var columns = grid.Columns
+                            .Cast<DataGridViewColumn>()
+                            .Where(c => c.Visible)
+                            .ToArray();
+
+                        writer.WriteLine(string.Join(",",
+                            columns.Select(c =>
+                                Csv(c.HeaderText))));
+
+                        foreach (DataGridViewRow row in grid.Rows)
+                        {
+                            if (row.IsNewRow)
+                                continue;
+
+                            writer.WriteLine(string.Join(",",
+                                columns.Select(c =>
+                                    Csv(Convert.ToString(
+                                        row.Cells[c.Index]
+                                            .FormattedValue)))));
+                        }
+                    }
+
+                    MessageBox.Show(
+                        "Xuất CSV thành công!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        "Lỗi xuất CSV: " + ex.Message,
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+    }
+}

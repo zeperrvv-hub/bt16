@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LabEquipmentCheckout
+{
+    public class Checkout
+    {
+        public string Id { get; set; }
+        public string StudentId { get; set; }
+        public string Student { get; set; }
+        public string Equipment { get; set; }
+        public int Quantity { get; set; }
+        public DateTime Borrow { get; set; }
+        public DateTime Due { get; set; }
+        public DateTime? Returned { get; set; }
+
+        public string State
+        {
+            get
+            {
+                if (Returned.HasValue)
+                    return "Đã trả";
+
+                if (Due.Date < DateTime.Today)
+                    return "Quá hạn";
+
+                return "Đang mượn";
+            }
+        }
+    }
+}

@@ -1,0 +1,92 @@
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace LabEquipmentCheckout
+{
+    public static class Ui
+    {
+        public static void ResetSelection(DataGridView grid)
+        {
+            grid.ClearSelection();
+            grid.CurrentCell = null;
+        }
+
+        public static bool Confirm(string message)
+        {
+            return MessageBox.Show(
+                "Bạn có chắc chắn muốn xóa " + message + "?",
+                "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            ) == DialogResult.Yes;
+        }
+
+        private static string Csv(string value)
+        {
+            return "\"" +
+                (value ?? "").Replace("\"", "\"\"") +
+                "\"";
+        }
+
+        public static void Export(DataGridView grid)
+        {
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Title = "Xuất danh sách mượn trả";
+                dialog.Filter = "CSV files (*.csv)|*.csv";
+                dialog.FileName = "DanhSachMuonTra.csv";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(
+                        dialog.FileName,
+                        false,
+                        new UTF8Encoding(true)))
+                    {
+                        var columns = grid.Columns
+                            .Cast<DataGridViewColumn>()
+                            .Where(c => c.Visible)
+                            .ToArray();
+
+                        writer.WriteLine(string.Join(",",
+                            columns.Select(c =>
+                                Csv(c.HeaderText))));
+
+                        foreach (DataGridViewRow row in grid.Rows)
+                        {
+                            if (row.IsNewRow)
+                                continue;
+
+                            writer.WriteLine(string.Join(",",
+                                columns.Select(c =>
+                                    Csv(Convert.ToString(
+                                        row.Cells[c.Index]
+                                            .FormattedValue)))));
+                        }
+                    }
+
+                    MessageBox.Show(
+                        "Xuất danh sách CSV thành công!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        "Lỗi xuất file: " + ex.Message,
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,343 @@
+
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace ClinicAppointmentManager
+{
+    public partial class Form1
+    {
+        private TableLayoutPanel layoutMain;
+        private TableLayoutPanel fieldsLayout;
+
+        private TextBox id;
+        private TextBox patient;
+        private TextBox phone;
+        private TextBox reason;
+        private TextBox search;
+
+        private DateTimePicker when;
+        private DateTimePicker day;
+
+        private ComboBox doctor;
+        private ComboBox status;
+        private ComboBox filter;
+
+        private CheckBox useDay;
+        private DataGridView grid;
+
+        private Button add;
+        private Button edit;
+        private Button del;
+        private Button clear;
+
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem exportMenuItem;
+        private ToolStripMenuItem exitMenuItem;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel count;
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+
+            this.Text = "CLINIC APPOINTMENT MANAGER";
+            this.ClientSize = new Size(1250, 720);
+            this.MinimumSize = new Size(930, 560);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.Font = new Font("Segoe UI", 10F);
+
+            id = new TextBox { Name = "id" };
+            patient = new TextBox { Name = "patient" };
+            phone = new TextBox { Name = "phone" };
+            reason = new TextBox { Name = "reason" };
+            search = new TextBox { Name = "search" };
+
+            when = new DateTimePicker
+            {
+                Name = "when",
+                Format = DateTimePickerFormat.Custom,
+                CustomFormat = "dd/MM/yyyy HH:mm",
+                ShowUpDown = true
+            };
+
+            day = new DateTimePicker
+            {
+                Name = "day",
+                Format = DateTimePickerFormat.Short
+            };
+
+            doctor = new ComboBox
+            {
+                Name = "doctor",
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            doctor.Items.AddRange(new object[]
+            {
+                "BS. An",
+                "BS. Bình",
+                "BS. Chi"
+            });
+            doctor.SelectedIndex = 0;
+
+            status = new ComboBox
+            {
+                Name = "status",
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            status.Items.AddRange(new object[]
+            {
+                "Chờ khám",
+                "Đang khám",
+                "Hoàn tất",
+                "Đã hủy"
+            });
+            status.SelectedIndex = 0;
+
+            filter = new ComboBox
+            {
+                Name = "filter",
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+
+            filter.Items.AddRange(new object[]
+            {
+                "Tất cả",
+                "Chờ khám",
+                "Đang khám",
+                "Hoàn tất",
+                "Đã hủy"
+            });
+            filter.SelectedIndex = 0;
+
+            useDay = new CheckBox
+            {
+                Name = "useDay",
+                Text = "Lọc theo ngày",
+                AutoSize = true
+            };
+
+            menuStrip1 = new MenuStrip();
+            var fileMenu = new ToolStripMenuItem("Tệp");
+
+            exportMenuItem = new ToolStripMenuItem("Xuất CSV");
+            exitMenuItem = new ToolStripMenuItem("Thoát");
+
+            fileMenu.DropDownItems.Add(exportMenuItem);
+            fileMenu.DropDownItems.Add(exitMenuItem);
+
+            menuStrip1.Items.Add(fileMenu);
+            menuStrip1.Dock = DockStyle.Top;
+            statusStrip1 = new StatusStrip();
+            count = new ToolStripStatusLabel
+            {
+                Text = "Số lịch hẹn: 0"
+            };
+            statusStrip1.Items.Add(count);
+            statusStrip1.Dock = DockStyle.Bottom;
+            layoutMain = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(10)
+            };
+            layoutMain.ColumnStyles.Add(  new ColumnStyle(SizeType.Percent, 38));
+            layoutMain.ColumnStyles.Add( new ColumnStyle(SizeType.Percent, 62));
+            var left = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true
+            };
+
+            var inputStack = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 1,
+                RowCount = 3,
+                AutoSize = true
+            };
+
+            fieldsLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 2,
+                RowCount = 7,
+                AutoSize = true,
+                Padding = new Padding(8)
+            };
+
+            fieldsLayout.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Absolute, 145));
+
+            fieldsLayout.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 100));
+
+            AddField(0, "Mã lịch hẹn", id);
+            AddField(1, "Tên bệnh nhân", patient);
+            AddField(2, "Số điện thoại", phone);
+            AddField(3, "Ngày giờ hẹn", when);
+            AddField(4, "Bác sĩ", doctor);
+            AddField(5, "Lý do khám", reason);
+            AddField(6, "Trạng thái", status);
+
+            inputStack.Controls.Add(fieldsLayout, 0, 0);
+
+            add = new Button
+            {
+                Name = "add",
+                Text = "Thêm",
+                AutoSize = true
+            };
+
+            edit = new Button
+            {
+                Name = "edit",
+                Text = "Cập nhật",
+                AutoSize = true
+            };
+
+            del = new Button
+            {
+                Name = "del",
+                Text = "Xóa",
+                AutoSize = true
+            };
+
+            clear = new Button
+            {
+                Name = "clear",
+                Text = "Làm mới",
+                AutoSize = true
+            };
+
+            var buttonPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                WrapContents = true
+            };
+
+            buttonPanel.Controls.Add(add);
+            buttonPanel.Controls.Add(edit);
+            buttonPanel.Controls.Add(del);
+            buttonPanel.Controls.Add(clear);
+
+            inputStack.Controls.Add(buttonPanel, 0, 2);
+            left.Controls.Add(inputStack);
+
+            layoutMain.Controls.Add(left, 0, 0);
+
+            var right = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 2
+            };
+
+            right.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
+
+            right.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+            var filters = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                WrapContents = true
+            };
+
+            filters.Controls.Add(new Label
+            {
+                Text = "Tìm kiếm:",
+                AutoSize = true
+            });
+
+            search.Width = 180;
+            filters.Controls.Add(search);
+            filters.Controls.Add(useDay);
+            filters.Controls.Add(day);
+
+            filters.Controls.Add(new Label
+            {
+                Text = "Trạng thái:",
+                AutoSize = true
+            });
+
+            filters.Controls.Add(filter);
+            right.Controls.Add(filters, 0, 0);
+            grid = new DataGridView
+            {
+                Name = "grid",
+                Dock = DockStyle.Fill,
+                AutoGenerateColumns = false,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                MultiSelect = false,
+                SelectionMode =
+                    DataGridViewSelectionMode.FullRowSelect,
+                AutoSizeColumnsMode =
+                    DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White
+            };
+
+            AddColumn("Mã hẹn", "Id");
+            AddColumn("Bệnh nhân", "Patient");
+            AddColumn("SĐT", "Phone");
+            AddColumn("Ngày giờ", "When", "dd/MM/yyyy HH:mm");
+            AddColumn("Bác sĩ", "Doctor");
+            AddColumn("Lý do", "Reason");
+            AddColumn("Trạng thái", "Status");
+
+            right.Controls.Add(grid, 0, 1);
+            layoutMain.Controls.Add(right, 1, 0);
+
+            this.Controls.Add(layoutMain);
+            this.Controls.Add(menuStrip1);
+            this.Controls.Add(statusStrip1);
+
+            this.MainMenuStrip = menuStrip1;
+
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        private void AddField(int row, string title, Control control)
+        {
+            fieldsLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+
+            fieldsLayout.Controls.Add(new Label
+            {
+                Text = title,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, row);
+
+            control.Dock = DockStyle.Fill;
+            control.Margin = new Padding(3, 5, 20, 5);
+
+            fieldsLayout.Controls.Add(control, 1, row);
+        }
+
+        private void AddColumn(
+            string header,
+            string property,
+            string format = null)
+        {
+            var column = new DataGridViewTextBoxColumn
+            {
+                HeaderText = header,
+                DataPropertyName = property,
+                Name = property,
+                MinimumWidth = 75
+            };
+
+            if (format != null)
+                column.DefaultCellStyle.Format = format;
+
+            grid.Columns.Add(column);
+        }
+    }
+}

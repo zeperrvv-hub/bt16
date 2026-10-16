@@ -1,0 +1,412 @@
+
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace RepairServiceTracker
+{
+    partial class Form1
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        private TableLayoutPanel layoutMain;
+        private TableLayoutPanel layoutFields;
+        private TableLayoutPanel layoutRight;
+        private Panel panelLeft;
+        private FlowLayoutPanel panelButtons;
+        private FlowLayoutPanel panelFilter;
+        private FlowLayoutPanel panelPhoto;
+
+        private TextBox txtId;
+        private TextBox txtCustomer;
+        private TextBox txtPhone;
+        private TextBox txtDescription;
+        private TextBox txtCost;
+        private TextBox txtSearch;
+
+        private ComboBox cboDevice;
+        private ComboBox cboState;
+        private ComboBox cboFilter;
+
+        private DateTimePicker dtpReceived;
+
+        private PictureBox picDevice;
+        private Button btnChooseImage;
+        private Button btnRemoveImage;
+
+        private DataGridView dgvRepair;
+
+        private Button btnAdd;
+        private Button btnUpdate;
+        private Button btnDelete;
+        private Button btnReset;
+
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem mnuFile;
+        private ToolStripMenuItem mnuExport;
+        private ToolStripMenuItem mnuExit;
+
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel lblStatus;
+
+        private ErrorProvider epCheck;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+                components.Dispose();
+
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+
+            layoutMain = new TableLayoutPanel();
+            layoutFields = new TableLayoutPanel();
+            layoutRight = new TableLayoutPanel();
+            panelLeft = new Panel();
+            panelButtons = new FlowLayoutPanel();
+            panelFilter = new FlowLayoutPanel();
+            panelPhoto = new FlowLayoutPanel();
+
+            txtId = new TextBox();
+            txtCustomer = new TextBox();
+            txtPhone = new TextBox();
+            txtDescription = new TextBox();
+            txtCost = new TextBox();
+            txtSearch = new TextBox();
+
+            cboDevice = new ComboBox();
+            cboState = new ComboBox();
+            cboFilter = new ComboBox();
+
+            dtpReceived = new DateTimePicker();
+
+            picDevice = new PictureBox();
+            btnChooseImage = new Button();
+            btnRemoveImage = new Button();
+
+            dgvRepair = new DataGridView();
+
+            btnAdd = new Button();
+            btnUpdate = new Button();
+            btnDelete = new Button();
+            btnReset = new Button();
+
+            menuStrip1 = new MenuStrip();
+            mnuFile = new ToolStripMenuItem();
+            mnuExport = new ToolStripMenuItem();
+            mnuExit = new ToolStripMenuItem();
+
+            statusStrip1 = new StatusStrip();
+            lblStatus = new ToolStripStatusLabel();
+
+            epCheck = new ErrorProvider(components);
+
+            SuspendLayout();
+
+            Text = "REPAIR SERVICE TRACKER";
+            Name = "Form1";
+            ClientSize = new Size(1350, 780);
+            MinimumSize = new Size(1000, 600);
+            StartPosition = FormStartPosition.CenterScreen;
+            AutoScaleMode = AutoScaleMode.Font;
+            Font = new Font("Segoe UI", 10F);
+
+            mnuFile.Text = "Tệp";
+            mnuExport.Text = "Xuất danh sách CSV";
+            mnuExit.Text = "Thoát";
+
+            mnuFile.DropDownItems.AddRange(
+                new ToolStripItem[]
+                {
+                    mnuExport,
+                    mnuExit
+                });
+
+            menuStrip1.Items.Add(mnuFile);
+            menuStrip1.Dock = DockStyle.Top;
+
+            lblStatus.Text = "Số đơn: 0 | Tổng chi phí: 0 đ";
+            statusStrip1.Items.Add(lblStatus);
+            statusStrip1.Dock = DockStyle.Bottom;
+
+            layoutMain.Dock = DockStyle.Fill;
+            layoutMain.ColumnCount = 2;
+            layoutMain.RowCount = 1;
+            layoutMain.Padding = new Padding(10);
+
+            layoutMain.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 38F));
+
+            layoutMain.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 62F));
+
+            panelLeft.Dock = DockStyle.Fill;
+            panelLeft.AutoScroll = true;
+
+            var panelInput = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 1,
+                RowCount = 3
+            };
+
+            panelInput.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 100F));
+
+            layoutFields.Dock = DockStyle.Top;
+            layoutFields.AutoSize = true;
+            layoutFields.ColumnCount = 2;
+            layoutFields.RowCount = 8;
+            layoutFields.Padding = new Padding(5);
+
+            layoutFields.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Absolute, 145F));
+
+            layoutFields.ColumnStyles.Add(
+                new ColumnStyle(SizeType.Percent, 100F));
+
+            txtId.Name = "txtId";
+            txtCustomer.Name = "txtCustomer";
+            txtPhone.Name = "txtPhone";
+            txtDescription.Name = "txtDescription";
+            txtCost.Name = "txtCost";
+            txtCost.Text = "0";
+
+            cboDevice.Name = "cboDevice";
+            cboDevice.DropDownStyle =
+                ComboBoxStyle.DropDownList;
+
+            cboDevice.Items.AddRange(new object[]
+            {
+                "Điện thoại",
+                "Laptop",
+                "Máy tính để bàn",
+                "Máy tính bảng",
+                "Tivi",
+                "Khác"
+            });
+
+            cboDevice.SelectedIndex = 0;
+
+            cboState.Name = "cboState";
+            cboState.DropDownStyle =
+                ComboBoxStyle.DropDownList;
+
+            cboState.Items.AddRange(new object[]
+            {
+                "Mới tiếp nhận",
+                "Đang sửa",
+                "Chờ linh kiện",
+                "Hoàn tất",
+                "Đã hủy"
+            });
+
+            cboState.SelectedIndex = 0;
+
+            dtpReceived.Name = "dtpReceived";
+            dtpReceived.Format = DateTimePickerFormat.Short;
+            dtpReceived.Value = DateTime.Today;
+
+            AddField(0, "Mã đơn", txtId);
+            AddField(1, "Tên khách hàng", txtCustomer);
+            AddField(2, "Số điện thoại", txtPhone);
+            AddField(3, "Loại thiết bị", cboDevice);
+            AddField(4, "Mô tả lỗi", txtDescription);
+            AddField(5, "Ngày tiếp nhận", dtpReceived);
+            AddField(6, "Chi phí dự kiến", txtCost);
+            AddField(7, "Trạng thái", cboState);
+
+            panelInput.Controls.Add(layoutFields, 0, 0);
+
+            picDevice.Name = "picDevice";
+            picDevice.Size = new Size(210, 150);
+            picDevice.BorderStyle = BorderStyle.FixedSingle;
+            picDevice.SizeMode = PictureBoxSizeMode.Zoom;
+            picDevice.BackColor = Color.White;
+
+            SetupButton(btnChooseImage,
+                "btnChooseImage", "Chọn ảnh");
+
+            SetupButton(btnRemoveImage,
+                "btnRemoveImage", "Xóa ảnh");
+
+            var imageButtons = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false
+            };
+
+            imageButtons.Controls.Add(btnChooseImage);
+            imageButtons.Controls.Add(btnRemoveImage);
+
+            panelPhoto.Dock = DockStyle.Top;
+            panelPhoto.Height = 170;
+            panelPhoto.Padding = new Padding(10);
+            panelPhoto.WrapContents = false;
+
+            panelPhoto.Controls.Add(picDevice);
+            panelPhoto.Controls.Add(imageButtons);
+
+            panelInput.Controls.Add(panelPhoto, 0, 1);
+
+            SetupButton(btnAdd, "btnAdd", "Thêm");
+            SetupButton(btnUpdate, "btnUpdate", "Cập nhật");
+            SetupButton(btnDelete, "btnDelete", "Xóa");
+            SetupButton(btnReset, "btnReset", "Làm mới");
+
+            panelButtons.Dock = DockStyle.Top;
+            panelButtons.AutoSize = true;
+            panelButtons.WrapContents = true;
+            panelButtons.Padding = new Padding(5);
+
+            panelButtons.Controls.AddRange(new Control[]
+            {
+                btnAdd,
+                btnUpdate,
+                btnDelete,
+                btnReset
+            });
+
+            panelInput.Controls.Add(panelButtons, 0, 2);
+            panelLeft.Controls.Add(panelInput);
+            layoutMain.Controls.Add(panelLeft, 0, 0);
+
+            layoutRight.Dock = DockStyle.Fill;
+            layoutRight.ColumnCount = 1;
+            layoutRight.RowCount = 2;
+
+            layoutRight.RowStyles.Add(
+                new RowStyle(SizeType.Absolute, 75F));
+
+            layoutRight.RowStyles.Add(
+                new RowStyle(SizeType.Percent, 100F));
+
+            panelFilter.Dock = DockStyle.Fill;
+            panelFilter.AutoScroll = true;
+            panelFilter.WrapContents = true;
+            panelFilter.Padding = new Padding(5);
+
+            panelFilter.Controls.Add(new Label
+            {
+                Text = "Mã / Tên / SĐT:",
+                AutoSize = true,
+                Margin = new Padding(3, 8, 5, 0)
+            });
+
+            txtSearch.Name = "txtSearch";
+            txtSearch.Width = 190;
+            panelFilter.Controls.Add(txtSearch);
+
+            panelFilter.Controls.Add(new Label
+            {
+                Text = "Trạng thái:",
+                AutoSize = true,
+                Margin = new Padding(10, 8, 5, 0)
+            });
+
+            cboFilter.Name = "cboFilter";
+            cboFilter.DropDownStyle =
+                ComboBoxStyle.DropDownList;
+
+            cboFilter.Items.AddRange(new object[]
+            {
+                "Tất cả",
+                "Mới tiếp nhận",
+                "Đang sửa",
+                "Chờ linh kiện",
+                "Hoàn tất",
+                "Đã hủy"
+            });
+
+            cboFilter.SelectedIndex = 0;
+            panelFilter.Controls.Add(cboFilter);
+            layoutRight.Controls.Add(panelFilter, 0, 0);
+
+            dgvRepair.Name = "dgvRepair";
+            dgvRepair.Dock = DockStyle.Fill;
+            dgvRepair.AutoGenerateColumns = false;
+            dgvRepair.ReadOnly = true;
+            dgvRepair.AllowUserToAddRows = false;
+            dgvRepair.AllowUserToDeleteRows = false;
+            dgvRepair.MultiSelect = false;
+            dgvRepair.SelectionMode =
+                DataGridViewSelectionMode.FullRowSelect;
+            dgvRepair.AutoSizeColumnsMode =
+                DataGridViewAutoSizeColumnsMode.Fill;
+            dgvRepair.BackgroundColor = Color.White;
+            dgvRepair.RowHeadersVisible = false;
+
+            AddColumn("Mã đơn", "Id");
+            AddColumn("Khách hàng", "Customer");
+            AddColumn("SĐT", "Phone");
+            AddColumn("Thiết bị", "Device");
+            AddColumn("Mô tả lỗi", "Description");
+            AddColumn("Ngày nhận", "Received", "dd/MM/yyyy");
+            AddColumn("Chi phí (đ)", "Cost", "N0");
+            AddColumn("Trạng thái", "State");
+
+            layoutRight.Controls.Add(dgvRepair, 0, 1);
+            layoutMain.Controls.Add(layoutRight, 1, 0);
+
+            epCheck.ContainerControl = this;
+            epCheck.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+
+            Controls.Add(layoutMain);
+            Controls.Add(statusStrip1);
+            Controls.Add(menuStrip1);
+
+            MainMenuStrip = menuStrip1;
+
+            ResumeLayout(false);
+            PerformLayout();
+        }
+        private void AddField(int row, string title, Control control)
+        {
+            layoutFields.RowStyles.Add(
+                new RowStyle(SizeType.Absolute, 42F));
+
+            layoutFields.Controls.Add(new Label
+            {
+                Text = title,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, row);
+
+            control.Dock = DockStyle.Fill;
+            control.Margin = new Padding(3, 5, 20, 5);
+
+            layoutFields.Controls.Add(control, 1, row);
+        }
+        private void SetupButton(
+            Button button, string name, string title)
+        {
+            button.Name = name;
+            button.Text = title;
+            button.AutoSize = true;
+            button.Height = 35;
+            button.Margin = new Padding(4);
+        }
+        private void AddColumn(
+            string title, string property, string format = null)
+        {
+            var column = new DataGridViewTextBoxColumn
+            {
+                Name = property,
+                HeaderText = title,
+                DataPropertyName = property,
+                MinimumWidth = 75
+            };
+
+            if (!string.IsNullOrEmpty(format))
+                column.DefaultCellStyle.Format = format;
+
+            dgvRepair.Columns.Add(column);
+        }
+    }
+}
